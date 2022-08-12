@@ -23,7 +23,7 @@ require('dotenv').config();
 // const infuraProjectId = process.env["INFURA_PROJECT_ID"];
  
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-const privateKeyTest = Process.env.PRIVATE_KEY;
+const privateKeyTest = process.env.PRIVATE_KEY;
 
 module.exports = {
   networks: {
