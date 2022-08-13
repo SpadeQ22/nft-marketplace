@@ -2,7 +2,6 @@ require('dotenv').config();
 const path = require("path")
 const express= require('express')
 const app = express()
-const routes = require('./routes')
 const Web3 = require('web3');
 const contract = require('truffle-contract');
 app.use(express.json())
