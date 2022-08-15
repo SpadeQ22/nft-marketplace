@@ -13,7 +13,7 @@ const Home = ( {items_list} ) => {
           <Row xs={1} md={2} lg={4} className="g-4 py-5">
             {items.map((item, idx) => (
               <Col key={idx} className="overflow-hidden">
-                <Card>
+                <Card border="dark">
                   <Card.Img variant="top" src={item.image} />
                   <Card.Body color="secondary">
                     <Card.Title>{item.name}</Card.Title>
@@ -23,7 +23,7 @@ const Home = ( {items_list} ) => {
                   </Card.Body>
                   <Card.Footer>
                     <div className='d-grid'>
-                      <Button onClick={() => console.log('Item Bought')} variant="primary" size="lg">
+                      <Button onClick={() => console.log('Item Bought')} variant="dark" size="lg">
                         Buy for {ethers.utils.formatEther(item.totalPrice)} ETH
                       </Button>
                     </div>
