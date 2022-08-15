@@ -1,23 +1,34 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navigation from './Navbar';
+import Home from './Home.js'
+import Create from './Create.js'
+import MyListedItems from './MyListedItems.js'
+import MyPurchases from './MyPurchases.js'
+import { useState } from 'react'
+import 'bootstrap/dist/css/bootstrap.css'
+import items_list from './itemslist';
 
 function App() {
-  const [data, setData] = React.useState(null);
-
-  React.useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
+  const [account, setAccount] = useState(null)
+  const [itemsList, setItemsList] = useState(items_list)
+  const web3Handler = () => {
+    setAccount("admin");
+  }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : data}</p>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Navigation web3Handler={web3Handler} account={account} />
+        <div>
+          <Routes>
+            <Route path="/" element={<Home items_list={ itemsList } setItems_list= { setItemsList }/>}/>
+            <Route path="/create" element={<Create items_list={ itemsList } setItems_list= { setItemsList }/>}/>
+            <Route path="/my-listed-items" element={<MyListedItems/>}/>
+            <Route path="/my-purchases" element={<MyPurchases/>}/>
+          </Routes>
+        </div>
+      </div>
+    </Router>
   );
 }
 
