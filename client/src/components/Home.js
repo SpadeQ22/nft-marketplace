@@ -1,11 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Col, Card, Button } from 'react-bootstrap'
+import { Spinner } from 'react-bootstrap'
 
-const Home = ( {items_list} ) => {
+const Home = ({ marketplace, nft }) => {
+  const [loading, setLoading] = useState(true)
+  const [items, setItems] = useState([])
+  const loadMarketplaceItems = async () => {
+    // Load all unsold items
+    const items = await marketplace.getItemsList();
+    setLoading(false)
+    setItems(items)
+  }
 
-  const [items, setItems] = useState(items_list)
+  const buyMarketItem = async (item) => {
+    //await (await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })).wait()
+    loadMarketplaceItems()
+  }
 
+  useEffect(() => {
+    loadMarketplaceItems()
+  }, [])
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+      <Spinner animation="border" style={{ display: 'flex' }} />
+      <p className='mx-3 my-0'>Loading...</p>
+    </div>
+  )
   return (
     <div className="flex justify-center">
       {items.length > 0 ?
@@ -23,7 +44,7 @@ const Home = ( {items_list} ) => {
                   </Card.Body>
                   <Card.Footer>
                     <div className='d-grid'>
-                      <Button onClick={() => console.log('Item Bought')} variant="dark" size="lg">
+                      <Button onClick={() => buyMarketItem(item)} variant="dark" size="lg">
                         Buy for {ethers.utils.formatEther(item.totalPrice)} ETH
                       </Button>
                     </div>

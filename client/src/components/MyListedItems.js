@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ethers } from "ethers"
-import { Row, Col, Card } from 'react-bootstrap'
+import { Row, Col, Card, Spinner } from 'react-bootstrap'
 
 function renderSoldItems(items) {
   return (
@@ -22,25 +22,24 @@ function renderSoldItems(items) {
   )
 }
 
-export default function MyListedItems() {
+export default function MyListedItems({ marketplace, nft, account }) {
   const [loading, setLoading] = useState(true)
   const [listedItems, setListedItems] = useState([])
   const [soldItems, setSoldItems] = useState([])
   const loadListedItems = async () => {
-    let listedItems = []
-    let soldItems = []
-
+    // Load all sold items that the user listed
     setLoading(false)
-    setListedItems(listedItems)
-    setSoldItems(soldItems)
+    setListedItems([])
+    setSoldItems([])
   }
   useEffect(() => {
     loadListedItems()
   }, [])
   if (loading) return (
-    <main style={{ padding: "1rem 0" }}>
-      <h2>Loading...</h2>
-    </main>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+      <Spinner animation="border" style={{ display: 'flex' }} />
+      <p className='mx-3 my-0'>Loading...</p>
+    </div>
   )
   return (
     <div className="flex justify-center">
@@ -60,7 +59,7 @@ export default function MyListedItems() {
             {soldItems.length > 0 && renderSoldItems(soldItems)}
         </div>
         : (
-          <main style={{ padding: "1rem 0" , textAlign: 'center' }}>
+          <main style={{ padding: "1rem 0" , textAlign: 'center'}}>
             <h2>No listed assets</h2>
           </main>
         )}

@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Royalty.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "hardhat/console.sol";
 
-contract MyToken is
+contract NFT is
     ERC721,
     ERC721Enumerable,
     ERC721URIStorage,
@@ -21,7 +22,7 @@ contract MyToken is
     mapping(uint256 => address) public _creators;
 
     constructor()
-        ERC721('MyToken', 'MTK')
+        ERC721('ZNFT', 'ZFT')
     {}
 
     function safeMint(address to, string memory uri) public onlyOwner {

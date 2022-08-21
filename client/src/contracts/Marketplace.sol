@@ -1,16 +1,16 @@
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./MyToken.sol";
-
+import "./NFT.sol";
 import "hardhat/console.sol";
 
-contract MarketPlace {
+contract Marketplace {
     using SafeMath for uint256; 
 
     struct Item {
+        string name;
+        string imgUrl;
         uint256 index; //Unique identifier for various NFTs on this particular MARKETPLACE
         address tokenAddress; //Contract address where the NFT exists.
         uint256 tokenID; //Identifier of NFT on that tokenAddress
@@ -29,13 +29,15 @@ contract MarketPlace {
 
 
     function listForSale(
+        string memory _name,
+        string memory _imgUrl,
         uint256 _tokenID,
         uint256 _price,
         address _tokenAddress,
         string memory _url
     ) public {
         uint256 index = items.length;
-        MyToken erc721 = MyToken(_tokenAddress);
+        NFT erc721 = NFT(_tokenAddress);
 
         // Check if the owner of the token is msg.sender
         require(
@@ -58,6 +60,8 @@ contract MarketPlace {
 
         items.push(
             Item(
+                _name,
+                _imgUrl,
                 index,
                 _tokenAddress,
                 _tokenID,
@@ -77,7 +81,7 @@ contract MarketPlace {
         );
 
         //Transfer the MyToken to the buyer
-        MyToken erc721 = MyToken(items[_index].tokenAddress);
+        NFT erc721 = NFT(items[_index].tokenAddress);
         erc721.safeTransferFrom(
             items[_index].owner,
             msg.sender,
