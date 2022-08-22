@@ -7,8 +7,8 @@ const User = ( { account } ) => {
             <Row style={{paddingTop: '1rem'}}>
                 <Col xs={6} md={4}></Col>
                 <Col xs={6} md={4}>
-                    <Card style={{ width: '28rem' }}>
-                            <Card.Img variant="top" src={userp} />
+                    <Card style={{ width: '28rem' , alignItems: 'center' }}>
+                            <Card.Img variant="top" src={userp} style={{ width: '50%'}}/>
                             <Card.Body>
                                 <Card.Title>
                                     <strong>User:</strong><br/>
