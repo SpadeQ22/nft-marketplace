@@ -2,8 +2,6 @@ require('dotenv').config();
 const path = require("path")
 const express= require('express')
 const app = express()
-const Web3 = require('web3');
-const contract = require('truffle-contract');
 app.use(express.json())
 
 const PORT = process.env.PORT || 3001;
