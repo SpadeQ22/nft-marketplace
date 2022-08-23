@@ -22,4 +22,24 @@ app.listen(PORT, () => {
 });
 
 
+// var pg = require('pg');
+// var connectionString = "postgres://postgres:adminadmin@database-1.cvwemstkxffy.us-east-1.rds.amazonaws.com:5432/NFT_MarketPlace";
 
+// var client = new pg.Client(connectionString);
+
+// client.connect(function(err) {
+//   if (err) {
+//     console.error('Database connection failed: ' + err.stack);
+//     return;
+//   }
+
+//   console.log('Connected to database.');
+// });
+
+// client.end();
+
+var client = require('./client');
+
+var t = client.getClientInfo('0xA1f61C8CA661B198971697279a56D15d9F1B3329');
+
+console.log(t);
