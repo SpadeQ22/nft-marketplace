@@ -43,5 +43,10 @@ module.exports = {
       timeoutBlocks: 100 // To avoid quick timeouts
     },
   },
+  compilers: {
+    solc: {
+      version: "^0.8.0"  // ex:  "0.4.20". (Default: Truffle's installed solc)
+    }
+  }
 };
 

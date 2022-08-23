@@ -8,21 +8,20 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "truffle compile && node server/server.js",
+    "start": "node server/server.js",
     "build": "cd client && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
-    "nodemon": "^2.0.19",
-    "path": "^0.12.7",
-    "truffle-contract": "^4.0.31",
-    "web3": "^1.7.5"
+    "nodemon": "^2.0.19"
   },
   "devDependencies": {
+    "@openzeppelin/truffle-upgrades": "^1.16.0",
     "@truffle/hdwallet-provider": "^2.0.13"
   }
 }
