@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { ethers } from "ethers"
 import { Spinner, Modal, Button, Form } from 'react-bootstrap'
 
+
 import './App.css';
 
 function App() {
@@ -19,11 +20,14 @@ function App() {
   const [account, setAccount] = useState(null)
   const [nft, setNFT] = useState({})
   const [marketplace, setMarketplace] = useState({})
+  const [creds, setCreds] = useState({username:"", age:null, pn:"", email:""});
+  const [credserr, setCredserr] = useState({});
   const [username, setUsername] = useState("");
   const [age, setAge] = useState("");
   const [pn, setPn] = useState("");
   const [email, setEmail] = useState("");
   const [acccheck, setAcccheck] = useState(false);
+  const [validate, setValidate] = useState(false);
   // MetaMask Login/Connect
   const web3Handler = async () => {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -62,15 +66,48 @@ function App() {
     setLoading(false)
   }
 
-  const handleNewacc = () => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name:username, email, age, phonenumber:pn })
-    };
-    fetch('/userinfo', requestOptions)
-      .then(response => response.json())
-      .then(data => this.setState({ postId: data.id }));
+  const handleChange = (e) => {
+    const {name, value} = e.target;
+    console.log(name, value)
+    setCreds({...creds, [name]:value});
+    if(!!credserr[name]){
+      setCredserr({...credserr, [name]: null})
+    }
+  }
+
+  const validateForm = () => {
+    const { username, age, pn, email } = creds;
+    const errors = {}
+    if(!username){errors.username = "Please Enter Your Username!"} 
+    if(!age){errors.age = "Please Enter Your Age!"} 
+    if(!pn){errors.pn = "Please Enter Your Phone Number!"} 
+    if(!email){errors.email = "Please Enter Your Email!"}
+    return errors;
+  }
+
+  
+
+  const handleNewacc = (e) => {
+    e.preventDefault();
+    const formErrors = validateForm();
+    if(Object.keys(formErrors).length > 0 ){setCredserr(formErrors)}
+    else{
+      const { username, email, age, pn } = creds;
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name:username, email, age, phonenumber:("+20"+pn.toString())})
+      };
+      fetch('/userinfo', requestOptions)
+        .then(response => response.json())
+        .then(data => this.setState({ postId: data.id }));
+        setAcccheck(false);
+        setAge(age);
+        setUsername(username);
+        setPn(pn);
+        setEmail(email);
+    }
+    setValidate(true);
   };
 
   return (
@@ -92,21 +129,25 @@ function App() {
                 <Modal.Title>Create an Account</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                  <Form>
+                  <Form validated={validate}>
                       <Form.Group className="mb-3" controlId="formBasicEmail">
                       <Form.Label>Email address</Form.Label>
-                      <Form.Control type="email" placeholder="Enter email" onChange={(e)=>{setEmail(e.target.value)}}/>
+                      <Form.Control required type="email" placeholder="Enter email" name={"email"} value={creds.email} onChange={handleChange}/>
                           <Form.Text className="text-muted">
                               We'll never share your email with anyone else.
                           </Form.Text>
+                      <Form.Control.Feedback type="invalid">{credserr.email}</Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group className="mb-3" controlId="formBasicPassword">
                       <Form.Label>Name</Form.Label>
-                      <Form.Control type="text" placeholder="Enter Name" onChange={(e)=>{setUsername(e.target.value)}}/>
+                      <Form.Control required type="text" placeholder="Enter Name" name={"username"} value={creds.username} onChange={handleChange}/>
+                      <Form.Control.Feedback type="invalid">{credserr.username}</Form.Control.Feedback>
                       <Form.Label>Age</Form.Label>
-                      <Form.Control type="number" placeholder="Enter Age" onChange={(e)=>{setAge(e.target.value)}}/>
+                      <Form.Control required type="number" placeholder="Enter Age" name={"age"} value={creds.age} onChange={handleChange}/>
+                      <Form.Control.Feedback type="invalid">{credserr.age}</Form.Control.Feedback>
                       <Form.Label>Phone Number</Form.Label>
-                      <Form.Control type="text" placeholder="Enter Phone Number" onChange={(e)=>{setPn(e.target.value)}}/>
+                      <Form.Control required type="number" placeholder="Enter Phone Number" name={"pn"} value={creds.pn} onChange={handleChange}/>
+                      <Form.Control.Feedback type="invalid">{credserr.pn}</Form.Control.Feedback>
                       </Form.Group>
                   </Form>
               </Modal.Body>
