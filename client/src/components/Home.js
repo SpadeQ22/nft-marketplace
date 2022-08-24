@@ -2,25 +2,55 @@ import { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Col, Card, Button } from 'react-bootstrap'
 import { Spinner } from 'react-bootstrap'
+import { useNavigate } from 'react-router'
 
-const Home = ({ marketplace, nft }) => {
+const Home = ({ marketplace, nft, acccheck }) => {
   const [loading, setLoading] = useState(true)
   const [items, setItems] = useState([])
+  const nav = useNavigate();
   const loadMarketplaceItems = async () => {
     // Load all unsold items
-    const items = await marketplace.getItemsList();
+    const itemCount = await(marketplace.itemCount())
+    let items = []
+    for (let i = 1; i <= itemCount; i++) {
+      const item = await(marketplace.items(i))
+      if (!item.sold) {
+        // get uri url from nft contract
+        const uri = await(nft.tokenURI(item.tokenId))
+        // use uri to fetch the nft metadata stored on ipfs 
+        const response = await(fetch(uri))
+        const metadata = await(response.json())
+        // get total price of item (item price + fee)
+        const totalPrice = await(marketplace.getTotalPrice(item.itemId))
+        // Add item to items array
+        items.push({
+          totalPrice,
+          itemId: item.itemId,
+          seller: item.seller,
+          name: metadata.name,
+          description: metadata.description,
+          image: metadata.image
+        })
+      }
+    }
     setLoading(false)
     setItems(items)
   }
 
   const buyMarketItem = async (item) => {
-    //await (await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })).wait()
+    await (await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })).wait()
     loadMarketplaceItems()
   }
 
   useEffect(() => {
+    if(acccheck){
+      nav("/user-info");
+      return
+    }
     loadMarketplaceItems()
   }, [])
+
+
   if (loading) return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
       <Spinner animation="border" style={{ display: 'flex' }} />
@@ -45,7 +75,7 @@ const Home = ({ marketplace, nft }) => {
                   <Card.Footer>
                     <div className='d-grid'>
                       <Button onClick={() => buyMarketItem(item)} variant="dark" size="lg">
-                        Buy for {ethers.utils.formatEther(item.totalPrice)} ETH
+                        Buy for {ethers.utils.formatEther(item.totalPrice)} ICZ
                       </Button>
                     </div>
                   </Card.Footer>

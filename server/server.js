@@ -16,15 +16,6 @@ const clientPool = new Pool({
 
 const PORT = process.env.PORT || 3001;
 
-
-AWS.config.update({
-  accessKeyId: process.env.Access_Key_ID,
-  secretAccessKey: Secret_Access_Key
-});
-
-var s3 = new AWS.S3();
-
-
 var params = {
   Bucket: "blockchain-training",
   Body: "filestream",
@@ -95,6 +86,11 @@ app.get("/nftinfo", (req, res) => {
     }
   });
 });
+
+app.post("/userinfo", (req, res) => {
+  console.log(req.body);
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

@@ -1,125 +1,99 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./NFT.sol";
-// import "hardhat/console.sol";
 
-contract Marketplace {
-    using SafeMath for uint256; 
+contract Marketplace is ReentrancyGuard {
+
+    // Variables
+    address payable public immutable feeAccount; // the account that receives fees
+    uint public immutable feePercent; // the fee percentage on sales 
+    uint public itemCount; 
 
     struct Item {
-        string name;
-        string imgUrl;
-        uint256 index; //Unique identifier for various NFTs on this particular MARKETPLACE
-        address tokenAddress; //Contract address where the NFT exists.
-        uint256 tokenID; //Identifier of NFT on that tokenAddress
-        uint256 price; //Price of the NFT listed for sale
-        address payable owner; //Current owner of the NFT
-        string url; //Points to the additional information about NFT.
-
+        uint itemId;
+        IERC721 nft;
+        uint tokenId;
+        uint price;
+        address payable seller;
+        bool sold;
     }
 
-    //Array of the Items listed for sale
-    Item[] public items;
+    // itemId -> Item
+    mapping(uint => Item) public items;
 
-    //Check if the NFT is already listed
-    //listedTokens[tokenAddress][tokenId]
-    mapping(address => mapping(uint256 => bool)) public listedTokens;
+    event Offered(
+        uint itemId,
+        address indexed nft,
+        uint tokenId,
+        uint price,
+        address indexed seller
+    );
+    event Bought(
+        uint itemId,
+        address indexed nft,
+        uint tokenId,
+        uint price,
+        address indexed seller,
+        address indexed buyer
+    );
 
-
-    function listForSale(
-        string memory _name,
-        string memory _imgUrl,
-        uint256 _tokenID,
-        uint256 _price,
-        address _tokenAddress,
-        string memory _url
-    ) public {
-        uint256 index = items.length;
-        NFT erc721 = NFT(_tokenAddress);
-
-        // Check if the owner of the token is msg.sender
-        require(
-            msg.sender == erc721.ownerOf(_tokenID),
-            "MarketPlace: Sender is not the owner of token"
-        );
-
-        //Check if the token ID is already listed
-        require(
-            !listedTokens[_tokenAddress][_tokenID],
-            "MarketPlace: Token is already listed"
-        );
-
-        //Check if the marketplace is approved for transfer for the tokenID
-        require(
-            address(this) == erc721.getApproved(_tokenID) ||
-                erc721.isApprovedForAll(msg.sender, address(this)),
-            "MarketPlace: NFTMarketPlace is not provided approval to transfer"
-        );
-
-        items.push(
-            Item(
-                _name,
-                _imgUrl,
-                index,
-                _tokenAddress,
-                _tokenID,
-                _price,
-                payable(msg.sender),
-                _url
-            )
-        );
-        listedTokens[_tokenAddress][_tokenID] = true;
+    constructor(uint _feePercent) {
+        feeAccount = payable(msg.sender);
+        feePercent = _feePercent;
     }
 
-    function buyNFT(uint256 _index) public payable {
-        //Check if required price is supplied
-        require(
-            msg.value == items[_index].price,
-            "MarketPlace: Please pay the amount equal to price"
+    // Make item to offer on the marketplace
+    function makeItem(IERC721 _nft, uint _tokenId, uint _price) external nonReentrant {
+        require(_price > 0, "Price must be greater than zero");
+        // increment itemCount
+        itemCount ++;
+        // transfer nft
+        _nft.transferFrom(msg.sender, address(this), _tokenId);
+        // add new item to items mapping
+        items[itemCount] = Item (
+            itemCount,
+            _nft,
+            _tokenId,
+            _price,
+            payable(msg.sender),
+            false
         );
-
-        //Transfer the MyToken to the buyer
-        NFT erc721 = NFT(items[_index].tokenAddress);
-        erc721.safeTransferFrom(
-            items[_index].owner,
-            msg.sender,
-            items[_index].tokenID
+        // emit Offered event
+        emit Offered(
+            itemCount,
+            address(_nft),
+            _tokenId,
+            _price,
+            msg.sender
         );
-
-        //Get the royalty information
-        (address royaltyReceiver, uint256 royaltyAmount) = erc721.royaltyInfo(
-            items[_index].tokenID,
-            msg.value
-        );
-
-        //Transfer the royalty amount to the royalty reciever.
-        uint256 remainingAmount = msg.value;
-        if (royaltyAmount > 0 && royaltyReceiver != address(0)) {
-            remainingAmount = msg.value - royaltyAmount;
-            payable(royaltyReceiver).transfer(royaltyAmount);
-        }
-
-        //Transfer the right amount to owner 
-        items[_index].owner.transfer(remainingAmount);
-
-        //Mark particular NFT as not
-        listedTokens[items[_index].tokenAddress][items[_index].tokenID] = false;
-
-        //Remove the item from the list
-        for (uint256 i = _index; i < items.length - 1; i++) {
-            items[i] = items[i + 1];
-            items[i].index -= 1;
-        }
-        items.pop();
     }
 
-    function getItemsList() external view returns (Item[] memory) {
-        return items;
+    function purchaseItem(uint _itemId) external payable nonReentrant {
+        uint _totalPrice = getTotalPrice(_itemId);
+        Item storage item = items[_itemId];
+        require(_itemId > 0 && _itemId <= itemCount, "item doesn't exist");
+        require(msg.value >= _totalPrice, "not enough ether to cover item price and market fee");
+        require(!item.sold, "item already sold");
+        // pay seller and feeAccount
+        item.seller.transfer(item.price);
+        feeAccount.transfer(_totalPrice - item.price);
+        // update item to sold
+        item.sold = true;
+        // transfer nft to buyer
+        item.nft.transferFrom(address(this), msg.sender, item.tokenId);
+        // emit Bought event
+        emit Bought(
+            _itemId,
+            address(item.nft),
+            item.tokenId,
+            item.price,
+            item.seller,
+            msg.sender
+        );
     }
-
-    function totalItems() external view returns (uint256) {
-        return items.length;
+    function getTotalPrice(uint _itemId) view public returns(uint){
+        return((items[_itemId].price*(100 + feePercent))/100);
     }
 }

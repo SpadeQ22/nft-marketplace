@@ -16,8 +16,10 @@
     "dotenv": "^16.0.1",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.4",
+    "fs": "0.0.1-security",
     "hardhat": "^2.10.2",
     "ipfs-http-client": "^56.0.1",
+    "os": "^0.1.2",
     "path": "^0.12.7",
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.2",
@@ -30,7 +32,7 @@
     "web3": "^1.7.5"
   },
   "scripts": {
-    "start": "truffle compile && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -55,5 +57,6 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11"
-  }
+  }, 
+  "proxy":"http://localhost:3001"
 }
