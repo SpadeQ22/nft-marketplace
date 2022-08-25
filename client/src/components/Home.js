@@ -19,7 +19,8 @@ const Home = ({ marketplace, nft, acccheck }) => {
         const uri = await(nft.tokenURI(item.tokenId))
         // use uri to fetch the nft metadata stored on ipfs
         console.log(uri); 
-        const response = await(fetch(uri))
+        const response = await(fetch(uri, {headers: { "Access-Control-Allow-Origin": "*" }}))
+        console.log(response);
         const metadata = await(response.json())
         // get total price of item (item price + fee)
         const totalPrice = await(marketplace.getTotalPrice(item.itemId))

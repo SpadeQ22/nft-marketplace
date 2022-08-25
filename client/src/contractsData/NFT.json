@@ -19648,12 +19648,12 @@
     "552": {
       "events": {},
       "links": {},
-      "address": "0x0a4AEf9ab376B3D74C6E0F932F7D7611518F4602",
-      "transactionHash": "0x157f3a03589e47c10099c66c24c0217ad28f8cc8cd85b49e0e39898abba3b9ef"
+      "address": "0x03DECd88E15593c78b6Ab6Eda0a265de852abB39",
+      "transactionHash": "0x8151bac8c72a876673a3e4f2bef8c1f36cf29e05c6e31cf053514f990208c895"
     }
   },
   "schemaVersion": "3.4.8",
-  "updatedAt": "2022-08-25T02:00:14.166Z",
+  "updatedAt": "2022-08-25T03:42:51.807Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
