@@ -59,6 +59,24 @@ const Create = ({ marketplace, nft, acccheck }) => {
       }
     }
   }
+
+  const createNFTAWS = async () => {
+    if (!image || !price || !name || !description) return
+    await fetch("/uploaduri", {
+      method: "POST",
+      headers: {"Accept":"application/json", "Content-Type":"application/json"},
+      body: JSON.stringify({image, price, name, description})
+    })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log("Success:", result.link);
+      mintThenList(result.link)
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      });
+    };
+
   const createNFT = async () => {
     if (!image || !price || !name || !description) return
     try{
@@ -70,7 +88,7 @@ const Create = ({ marketplace, nft, acccheck }) => {
   }
   const mintThenList = async (result) => {
     nav("/");
-    const uri = `https://ipfs.infura.io/ipfs/${result.path}`
+    const uri = result;
     // mint nft 
     await(await nft.mint(uri)).wait()
     // get tokenId of new nft 
@@ -97,7 +115,7 @@ const Create = ({ marketplace, nft, acccheck }) => {
               <Form.Control onChange={(e) => setDescription(e.target.value)} size="lg" required as="textarea" placeholder="Description" />
               <Form.Control onChange={(e) => setPrice(e.target.value)} size="lg" required type="number" placeholder="Price in ICZ" />
               <div className="d-grid px-0">
-                <Button onClick={createNFT} variant="dark" size="lg">
+                <Button onClick={createNFTAWS} variant="dark" size="lg">
                   Create & List NFT!
                 </Button>
               </div>

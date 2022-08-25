@@ -148,6 +148,26 @@ app.post("/upload", (req, res, next)=>{
   });
 })
 
+app.post("/uploaduri", (req, res)=>{
+  var buf = JSON.stringify(req.body);
+  console.log(req.body);
+  const params = {
+    Bucket: "blockchain-training",
+    Body: buf,
+    Key: req.body.image+".json",
+    ContentEncoding: 'base64',
+    ContentType: 'application/json'
+  }
+  s3.upload(params, (err, data) => {
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.send({"link":data.Location});
+    }
+  });
+})
+
 
 
 app.listen(PORT, () => {
