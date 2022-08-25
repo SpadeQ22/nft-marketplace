@@ -11,6 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import { useState } from 'react'
 import { ethers } from "ethers"
 import { Spinner, Modal, Button, Form } from 'react-bootstrap'
+import './App.css';
 
 
 import './App.css';

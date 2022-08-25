@@ -112,9 +112,9 @@ app.post("/userinfo", (req, res)=>{
       console.log(err.stack);
       res.send({"message":"couldn't connect to database"});
     }else {
-      client.query(`INSERT INTO client (name, age, address, phonenumber, email) 
-      VALUES(${req.body.name}, ${req.body.age}, ${req.body.address}, 
-        ${req.body.phonenumber}, ${req.body.email});`, (err, result)=>{
+      client.query(`INSERT INTO client(name, age, address, phonenumber, email) 
+      VALUES('${req.body.name}', ${req.body.age}, '${req.body.address}', 
+        '${req.body.phonenumber}', '${req.body.email}');`, (err, result)=>{
           if(err){
             console.log(err.stack);
             res.send({"message":"error during added"});
@@ -153,7 +153,7 @@ app.post("/uploaduri", (req, res)=>{
   const params = {
     Bucket: "blockchain-training",
     Body: buf,
-    Key: req.body.image+".json",
+    Key: req.body.name+ req.body.description + req.body.price.toString() +".json",
     ContentEncoding: 'base64',
     ContentType: 'application/json'
   }
