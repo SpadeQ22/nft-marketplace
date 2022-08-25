@@ -46,19 +46,6 @@ const Create = ({ marketplace, nft, acccheck }) => {
       console.error("Error:", error);
       });
     };
-  
-  const uploadToIPFS = async (event) => {
-    event.preventDefault()
-    const file = event.target.files[0]
-    if (typeof file !== 'undefined') {
-      try {
-        const result = await client.add(file)
-        setImage(`https://ipfs.infura.io/ipfs/${result.path}`)
-      } catch (error){
-        console.log("ipfs image upload error: ", error)
-      }
-    }
-  }
 
   const createNFTAWS = async () => {
     if (!image || !price || !name || !description) return
@@ -76,16 +63,7 @@ const Create = ({ marketplace, nft, acccheck }) => {
       console.error("Error:", error);
       });
     };
-
-  const createNFT = async () => {
-    if (!image || !price || !name || !description) return
-    try{
-      const result = await client.add(JSON.stringify({image, price, name, description}))
-      mintThenList(result)
-    } catch(error) {
-      console.log("ipfs uri upload error: ", error)
-    }
-  }
+    
   const mintThenList = async (result) => {
     nav("/");
     const uri = result;
