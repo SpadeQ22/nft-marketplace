@@ -116,6 +116,7 @@ app.post("/userinfo", (req, res)=>{
           }
       });
     }
+    client.release();
   });
 });
 
