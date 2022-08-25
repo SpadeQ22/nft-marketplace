@@ -1,0 +1,40 @@
+2_deploy_contracts.js
+=====================
+⠼ Fetching solc version list from solc-bin. Attempt #1
+   Deploying 'NFT'
+   ---------------
+   > transaction hash:    0x1a9aa1b53bf2a728b9111f7b35f2ea09f502abbd0e9fe74880089ad9322cddc0
+   > Blocks: 1            Seconds: 20c-bin. Attempt #1
+   > contract address:    0x066CF2FCbD35C6455828B63D702E4c8B51777A9E
+   > block number:        254758
+   > block timestamp:     1661203464
+   > account:             0xD2a6b41E1fF2c052e9495fD345Df111d4beEF4AE
+   > balance:             999.96531222492099912
+   > gas used:            3815672 (0x3a38f8)
+   > gas price:           2.500000008 gwei
+   > value sent:          0 ETH
+   > total cost:          0.009539180030525376 ETH
+
+⠹ Fetching solc version list from solc-bin. Attempt #1
+   Deploying 'Marketplace'
+   -----------------------
+   > transaction hash:    0xb4deaf9d2ae77648286bdd848cf87c432fc0e1c8bb22c9e5a1f7d7f3c084c551
+   > Blocks: 1            Seconds: 20c-bin. Attempt #1
+   > contract address:    0x79d91A1cb66b00A0Ad7600eF05F86610F27b6864
+   > block number:        254759
+   > block timestamp:     1661203488
+   > account:             0xD2a6b41E1fF2c052e9495fD345Df111d4beEF4AE
+   > balance:             999.960314702405007048
+   > gas used:            1999009 (0x1e80a1)
+   > gas price:           2.500000008 gwei
+   > value sent:          0 ETH
+   > total cost:          0.004997522515992072 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:     0.014536702546517448 ETH
+
+Summary
+=======
+> Total deployments:   2
+> Final cost:          0.014536702546517448 ETH
