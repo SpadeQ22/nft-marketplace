@@ -150,7 +150,6 @@ app.post("/upload", (req, res, next)=>{
 
 app.post("/uploaduri", (req, res)=>{
   var buf = JSON.stringify(req.body);
-  console.log(req.body);
   const params = {
     Bucket: "blockchain-training",
     Body: buf,
