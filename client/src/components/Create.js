@@ -27,6 +27,26 @@ const Create = ({ marketplace, nft, acccheck }) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const nav = useNavigate();
+
+  const uploadToAWS = (event) => {
+    event.preventDefault()
+    const file = event.target.files[0]
+    const formData = new FormData();
+    formData.append("file", file);
+    fetch("/upload", {
+      method: "POST",
+      body: formData,
+    })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log("Success:", result);
+      setImage(result.link);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      });
+    };
+  
   const uploadToIPFS = async (event) => {
     event.preventDefault()
     const file = event.target.files[0]
@@ -71,7 +91,7 @@ const Create = ({ marketplace, nft, acccheck }) => {
                 type="file"
                 required
                 name="file"
-                onChange={uploadToIPFS}
+                onChange={uploadToAWS}
               />
               <Form.Control onChange={(e) => setName(e.target.value)} size="lg" required type="text" placeholder="Name" />
               <Form.Control onChange={(e) => setDescription(e.target.value)} size="lg" required as="textarea" placeholder="Description" />

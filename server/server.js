@@ -4,8 +4,14 @@ const express= require('express');
 const app = express();
 const {Pool} = require("pg");
 const Busboy = require("busboy");
+const AWS = require("aws-sdk");
+const busboy = require('connect-busboy');
+const busboyBodyParser = require('busboy-body-parser');
 
 app.use(express.json());
+app.use(busboy());
+app.use(express.urlencoded({ extended: true }));
+app.use(busboyBodyParser());
 
 const clientPool = new Pool({
   host: "database-1.cvwemstkxffy.us-east-1.rds.amazonaws.com",
@@ -20,17 +26,18 @@ const PORT = process.env.PORT || 3001;
 
 AWS.config.update({
   accessKeyId: process.env.Access_Key_ID,
-  secretAccessKey: Secret_Access_Key
+  secretAccessKey: process.env.Secret_Access_Key,
+  region: "us-east-1"
 });
 
 var s3 = new AWS.S3();
 
 
-var params = {
-  Bucket: "blockchain-training",
-  Body: "filestream",
-  key:"file-name"
-};
+// var params = {
+//   Bucket: "blockchain-training",
+//   Body: "filestream",
+//   key:"file-name"
+// };
 
 
 app.use(express.static(path.resolve(__dirname, '../client/build')));
@@ -121,19 +128,24 @@ app.post("/userinfo", (req, res)=>{
 });
 
 
-app.post("/upload", (req, res)=>{
+app.post("/upload", (req, res, next)=>{
   const bb = Busboy({headers: req.headers});
-
-  bb.on('file', async(fieldname, file, filename, encoding, mimetype) => {
-    const params = {
-      Bucket: "blockchain-training",
-      Body: file,
-      key:filename
+  bb.on('finish', () => {
+    console.log('Upload finished')
+  });
+  const params = {
+    Bucket: "blockchain-training",
+    Body: req.files.file.data,
+    Key: req.files.file.name
+  }
+  s3.upload(params, (err, data) => {
+    if(err){
+      console.log(err);
     }
-    const upload = await s3.upload(params).promise();
-    res.send({"link": upload.Location});
-  })
-
+    else{
+      res.send({"link":data.Location});
+    }
+  });
 })
 
 
