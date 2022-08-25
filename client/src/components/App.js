@@ -96,7 +96,7 @@ function App() {
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name:username, email, age, phonenumber:("+20"+pn.toString())})
+        body: JSON.stringify({ address:account, name:username, email, age, phonenumber:("+20"+pn.toString())})
       };
       fetch('/userinfo', requestOptions)
         .then(response => response.json())
