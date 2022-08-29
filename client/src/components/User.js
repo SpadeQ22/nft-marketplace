@@ -1,26 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Card, Button, Container, Row, Col, Modal, Form } from 'react-bootstrap';
+import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import userp from './userp.png';
 
-const User = ( { account, username, age, pn, email, handleNewacc } ) => {
-    const [show, setShow] = useState(true);
-    const [acc, setacc] = useState('');
-    const [uanme, setuname] = useState('');
-    const [ag, setag] = useState('');
-    const [mail, setmail] = useState('');
-    const handleClose = () => {
-        if(account && username && age && pn && email){
-            setShow(false);
-        }
-        else{
-            setShow(true);
-        }
-    }
-    useEffect(() => {
-        if(account && username && age && pn && email){
-            setShow(false);
-        }
-    }, []);
+const User = ( { account, username, age, pn, email } ) => {
     return ( 
         <Container className="justify-content-md-center" fluid>
             <Row style={{paddingTop: '1rem'}}>

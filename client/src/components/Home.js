@@ -3,7 +3,6 @@ import { ethers } from "ethers"
 import { Row, Col, Card, Button } from 'react-bootstrap'
 import { Spinner } from 'react-bootstrap'
 import { useNavigate } from 'react-router'
-import LoadingOverlay from 'react-loading-overlay'
 
 const Home = ({ marketplace, nft, acccheck }) => {
   const [loading, setLoading] = useState(true)
