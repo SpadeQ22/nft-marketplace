@@ -56,7 +56,7 @@ const Home = ({ marketplace, nft, acccheck }) => {
   return (
     <div className="flex justify-center">
       {loading && <div style={{width:"100%", position: "fixed", display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '95vh', zIndex: "999"}}>
-      <Button variant="dark">
+      <Button variant="dark" style={{pointerEvents: "none"}}>
         <Spinner as="span" size="sm" animation="border"/> <span>Loading...</span>
       </Button>
       </div>}
