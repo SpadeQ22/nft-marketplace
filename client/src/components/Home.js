@@ -37,6 +37,7 @@ const Home = ({ marketplace, nft, acccheck }) => {
 
   const buyMarketItem = async (item) => {
     await (await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })).wait()
+    setLoading(true) 
     loadMarketplaceItems()
   }
 
@@ -45,6 +46,7 @@ const Home = ({ marketplace, nft, acccheck }) => {
       nav("/user-info");
       return
     }
+    setLoading(true) 
     loadMarketplaceItems()
   }, [])
 

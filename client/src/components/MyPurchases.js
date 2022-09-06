@@ -28,6 +28,7 @@ export default function MyPurchases({ marketplace, nft, account }) {
     setPurchases(purchases)
   }
   useEffect(() => {
+    setLoading(true) 
     loadPurchasedItems()
   }, [])
 
@@ -44,8 +45,10 @@ export default function MyPurchases({ marketplace, nft, account }) {
             {purchases.map((item, idx) => (
               <Col key={idx} className="overflow-hidden">
                 <Card>
-                  <Card.Img variant="top" src={item.image} />
-                  <Card.Footer>{ethers.utils.formatEther(item.totalPrice)} ICZ</Card.Footer>
+                  <div style={{height:"17rem", backgroundColor:"rgba(0, 0, 0, 0.03)", borderTop:"1px solid rgba(0, 0, 0, 0.125)"}} className="overflow-hidden">
+                    <Card.Img variant="top" src={item.image} />
+                  </div>
+                  <Card.Footer style={{borderTop:"0px"}}>{ethers.utils.formatEther(item.totalPrice)} ICZ</Card.Footer>
                 </Card>
               </Col>
             ))}
