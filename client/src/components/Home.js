@@ -9,22 +9,17 @@ const Home = ({ marketplace, nft, acccheck }) => {
   const [items, setItems] = useState([])
   const nav = useNavigate();
   const loadMarketplaceItems = async () => {
-    // Load all unsold items
     const itemCount = await(marketplace.itemCount())
     let items = []
     for (let i = 1; i <= itemCount; i++) {
       const item = await(marketplace.items(i))
       if (!item.sold) {
-        // get uri url from nft contract
         const uri = await(nft.tokenURI(item.tokenId))
-        // use uri to fetch the nft metadata stored on ipfs
         console.log(uri); 
         const response = await(fetch(uri, {headers: { "Access-Control-Allow-Origin": "*" }}))
         console.log(response);
         const metadata = await(response.json())
-        // get total price of item (item price + fee)
         const totalPrice = await(marketplace.getTotalPrice(item.itemId))
-        // Add item to items array
         items.push({
           totalPrice,
           itemId: item.itemId,
@@ -65,8 +60,10 @@ const Home = ({ marketplace, nft, acccheck }) => {
           <Row xs={1} md={2} lg={4} className="g-4 py-5">
             {items.map((item, idx) => (
               <Col key={idx} className="overflow-hidden">
-                <Card border="dark">
-                  <Card.Img variant="top" src={item.image} />
+                <Card border="dark" style={{height:"28rem"}}>
+                  <div style={{height:"17rem"}} className="overflow-hidden">
+                    <Card.Img variant="top" src={item.image} />
+                  </div>
                   <Card.Body color="secondary">
                     <Card.Title>{item.name}</Card.Title>
                     <Card.Text>

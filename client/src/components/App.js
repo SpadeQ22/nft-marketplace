@@ -13,9 +13,6 @@ import { ethers } from "ethers"
 import { Spinner, Modal, Button, Form } from 'react-bootstrap'
 import './App.css';
 
-
-import './App.css';
-
 function App() {
   const [loading, setLoading] = useState(true)
   const [account, setAccount] = useState(null)
@@ -29,13 +26,10 @@ function App() {
   const [email, setEmail] = useState("");
   const [acccheck, setAcccheck] = useState(false);
   const [validate, setValidate] = useState(false);
-  // MetaMask Login/Connect
   const web3Handler = async () => {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     setAccount(accounts[0])
-    // Get provider from Metamask
     const provider = new ethers.providers.Web3Provider(window.ethereum)
-    // Set signer
     const signer = provider.getSigner()
     fetch(`/userinfo/${accounts[0]}`).then((res) =>{
       res.json().then((data) => {
@@ -59,7 +53,6 @@ function App() {
     loadContracts(signer)
   }
   const loadContracts = async (signer) => {
-    // Get deployed copies of contracts
     const marketplace = new ethers.Contract(MarketplaceData.networks["552"]["address"], MarketplaceData.abi, signer)
     setMarketplace(marketplace)
     const nft = new ethers.Contract(NFTData.networks["552"]["address"], NFTData.abi, signer)
